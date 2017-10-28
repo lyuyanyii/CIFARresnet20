@@ -12,14 +12,16 @@ def augment(img):
 	img = np.concatenate([padding2, img, padding2], axis = 1)
 	x, y = np.random.randint(8, size = 2)
 	img = img[:, x:x + 32, y : y + 32]
-	assert img.shape == (3, 32, 32)
 	return img
 
 import msgpack
 import msgpack_numpy as m
 
-def worker(data, p, que, lock, is_train):
+def worker(data, pname, que, lock, is_train):
+	p = OutputPipe(pname, buffer_size = 200)
+	lock.acquire()
 	with control(io = [p]):
+		lock.release()
 		while True:
 			idx = que.get()
 			que.put((int(idx) + 1) % len(data[0]))
@@ -28,11 +30,11 @@ def worker(data, p, que, lock, is_train):
 			img = (img - 128) / 256
 			if is_train:
 				img = augment(img)
-			a = msgpack.packb([img, data[1][int(idx)]], default = m.encode)
-			print("put {} data {} successfully".format({True:"train", False:"valid"}[is_train], int(idx)))
+			#a = msgpack.packb([img, data[1][int(idx)]], default = m.encode)
 			#b = msgpack.unpackb(a, object_hook = m.decode)
 			#print(np.array(b[0]).shape, b[1])
-			p.put_pyobj(a)
+			p.put_pyobj([np.array(img), int(data[1][int(idx)])])
+			print("put {} data {} successfully".format({True:"train", False:"valid"}[is_train], int(idx)))
 
 def load_data(name):
 	import pickle
@@ -63,7 +65,7 @@ if True:
 	que.put(0)
 	lock = Lock()
 
-	p = OutputPipe("lyy.CIFAR10.resnet20.train", buffer_size = 1000)
+	p = "lyy.CIFAR10.resnet20.train"
 	for i in range(args.t):
 		proc = P(target = worker, args = (train_dataset, p, que, lock, True))
 		proc.start()
@@ -71,7 +73,7 @@ if True:
 	
 	que_val = Queue(1)
 	que_val.put(0)
-	p_val = OutputPipe("lyy.CIFAR10.resnet20.valid", buffer_size = 1000)
+	p_val = "lyy.CIFAR10.resnet20.valid"
 	proc = P(target = worker, args = (valid_dataset, p_val, que_val, lock, False))
 	proc.start()
 	lis.append(proc)

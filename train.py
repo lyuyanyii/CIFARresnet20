@@ -22,8 +22,9 @@ def get_minibatch(pname, size):
 	p = InputPipe(pname, buffer_size = 1000)
 	with control(io = [p]):
 		for i in range(size):
-			a = p.get()
-			(img, label) = msgpack.unpackb(a, object_hook = m.decode)
+			#a = p.get()
+			#(img, label) = msgpack.unpackb(a, object_hook = m.decode)
+			(img, label) = p.get()
 			data.append(img)
 			labels.append(label)
 	return {"data": np.array(data).astype(np.float32), "label":np.array(labels)}
