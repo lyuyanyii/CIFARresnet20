@@ -1,11 +1,11 @@
-[28 17:22:43 330@env.py:meghair.train.env] WRN --fast-run not enabled; execution may be slow
-[28 17:22:46 0@(unknown file):megbrain] create CompNode gpu0:0 from logical xpux:0
-[28 17:22:46 0@(unknown file):megbrain] cuda: gpu0: name=`TITAN Xp' dyn_mem_reserve=0.00MiB alignment=0x200
-[28 17:22:46 1021@opr.py:megbrain] create CompNode cpu0:0 from logical cpux:0
-[28 17:22:46 195@fprop.py:megskull.graph.fprop] FpropEnv(train): start fprop VarNode(owner_opr=weight_decay(loss){WeightDecay@0x7f7f26707f98})
-[28 17:22:46 161@fprop.py:megskull.graph.fprop] init FpropEnv(train) rng using random seed 2674914893
-[28 17:22:46 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
-[28 17:22:46 962@regularizer.py:megskull.opr.regularizer] weight decay:
+[28 18:56:08 330@env.py:meghair.train.env] WRN --fast-run not enabled; execution may be slow
+[28 18:56:11 0@(unknown file):megbrain] create CompNode gpu0:0 from logical xpux:0
+[28 18:56:11 0@(unknown file):megbrain] cuda: gpu0: name=`TITAN Xp' dyn_mem_reserve=0.00MiB alignment=0x200
+[28 18:56:11 1021@opr.py:megbrain] create CompNode cpu0:0 from logical cpux:0
+[28 18:56:11 195@fprop.py:megskull.graph.fprop] FpropEnv(train): start fprop VarNode(owner_opr=weight_decay(loss){WeightDecay@0x7f5a27787fd0})
+[28 18:56:11 161@fprop.py:megskull.graph.fprop] init FpropEnv(train) rng using random seed 2674914893
+[28 18:56:11 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
+[28 18:56:11 962@regularizer.py:megskull.opr.regularizer] weight decay:
  conv1:W: 0.0001
  conv2:W: 0.0001
  conv3:W: 0.0001
@@ -28,8 +28,8 @@
  conv20:W: 0.0001
  conv21:W: 0.0001
  fc0:W: 0.0001
-[28 17:22:46 54@param_init.py:megskull.opr.helper.param_init] start automatic initilization for 44 params
-[28 17:22:46 60@param_init.py:megskull.opr.helper.param_init] finished param initilization:
+[28 18:56:11 54@param_init.py:megskull.opr.helper.param_init] start automatic initilization for 44 params
+[28 18:56:11 60@param_init.py:megskull.opr.helper.param_init] finished param initilization:
  conv1:W{Conv2D}: from Gaussian with std=0.2722, use sqrt(2/fan_in) for ReLU
  conv2:W{Conv2D}: from Gaussian with std=0.1179, use sqrt(2/fan_in) for ReLU
  conv3:W{Conv2D}: from Gaussian with std=0.1179, use sqrt(2/fan_in) for ReLU
@@ -52,8 +52,8 @@
  conv20:W{Conv2D}: from Gaussian with std=0.0589, use sqrt(2/fan_in) for ReLU
  conv21:W{Conv2D}: from Gaussian with std=0.0589, use sqrt(2/fan_in) for ReLU
  fc0:W{FullyConnected}: from Gaussian with std=0.1250
-[28 17:22:47 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
-[28 17:22:47 272@fprop.py:megskull.graph.fprop] FpropEnv(train): shapes of var nodes:
+[28 18:56:11 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
+[28 18:56:11 272@fprop.py:megskull.graph.fprop] FpropEnv(train): shapes of var nodes:
  data: (128, 3, 32, 32)
  label: (128)
  conv1: (128, 16, 32, 32)
@@ -102,9 +102,9 @@
  pred: (128, 10)
  loss: (1)
  weight_decay(loss): (1)
-[28 17:22:47 195@fprop.py:megskull.graph.fprop] FpropEnv(val): start fprop VarNode(owner_opr=weight_decay(loss){WeightDecay@0x7f7f26707f98})
-[28 17:22:47 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
-[28 17:22:47 962@regularizer.py:megskull.opr.regularizer] weight decay:
+[28 18:56:11 195@fprop.py:megskull.graph.fprop] FpropEnv(val): start fprop VarNode(owner_opr=weight_decay(loss){WeightDecay@0x7f5a27787fd0})
+[28 18:56:11 1231@opr.py:megbrain] WRN dtype of index in IndexingOneHot must be Int32, got Float32 for variable label; convert to Int32 implicitly
+[28 18:56:11 962@regularizer.py:megskull.opr.regularizer] weight decay:
  conv1:W: 0.0001
  conv2:W: 0.0001
  conv3:W: 0.0001
@@ -127,7 +127,7 @@
  conv20:W: 0.0001
  conv21:W: 0.0001
  fc0:W: 0.0001
-[28 17:22:47 272@fprop.py:megskull.graph.fprop] FpropEnv(val): shapes of var nodes:
+[28 18:56:11 272@fprop.py:megskull.graph.fprop] FpropEnv(val): shapes of var nodes:
  data: (128, 3, 32, 32)
  label: (128)
  conv1: (128, 16, 32, 32)
@@ -176,7 +176,7 @@
  pred: (128, 10)
  loss: (1)
  weight_decay(loss): (1)
-[28 17:22:47 245@base.py:megskull.optimizer.base] params to train:
+[28 18:56:11 245@base.py:megskull.optimizer.base] params to train:
  conv1:W: (16, 3, 3, 3) dim=432 cn=gpu0:0
  conv1:b: (16,) dim=16 cn=gpu0:0
  conv2:W: (16, 16, 3, 3) dim=2304 cn=gpu0:0
@@ -222,31 +222,47 @@
  fc0:W: (64, 10) dim=640 cn=gpu0:0
  fc0:b: (10,) dim=10 cn=gpu0:0
  total_dim=271690 (0.26M)
-[28 17:22:47 991@mgb.py:megbrain] graph optimization: applied 16 passes, total 15334 var(s) replaced; time=159.72ms
-[28 17:22:47 991@mgb.py:megbrain] opr seq of length 1580: var_static=1907 var_dynamic_shape=0 var_dynamic_storage=0 no_sys_alloc=0
-[28 17:22:47 991@mgb.py:megbrain] graph optimization: applied 8 passes, total 1547 var(s) replaced; time=16.09ms
-[28 17:22:47 991@mgb.py:megbrain] opr seq of length 448: var_static=499 var_dynamic_shape=0 var_dynamic_storage=0 no_sys_alloc=0
-[28 17:22:57 746@mgb.py:megbrain] static memory allocation:
+[28 18:56:11 991@mgb.py:megbrain] graph optimization: applied 16 passes, total 15334 var(s) replaced; time=156.30ms
+[28 18:56:11 991@mgb.py:megbrain] opr seq of length 1580: var_static=1907 var_dynamic_shape=0 var_dynamic_storage=0 no_sys_alloc=0
+[28 18:56:11 991@mgb.py:megbrain] graph optimization: applied 8 passes, total 1547 var(s) replaced; time=16.01ms
+[28 18:56:11 991@mgb.py:megbrain] opr seq of length 448: var_static=499 var_dynamic_shape=0 var_dynamic_storage=0 no_sys_alloc=0
+[28 18:56:42 746@mgb.py:megbrain] static memory allocation:
  comp_node           alloc                      lower_bound         upper_bound
-   gpu0:0    203.62MiB( 213513216bytes)    195.68MiB( 96.10%)    956.97MiB(469.98%)
-[28 17:22:57 746@mgb.py:megbrain] determined workspace size limit upper bound and reallocate static memory; bounds(MiB): gpu0:0=8226.32
-[28 17:22:57 746@mgb.py:megbrain] static memory allocation:
+   gpu0:0    199.63MiB( 209324032bytes)    195.68MiB( 98.02%)    956.97MiB(479.38%)
+[28 18:56:42 746@mgb.py:megbrain] determined workspace size limit upper bound and reallocate static memory; bounds(MiB): gpu0:0=11587.31
+[28 18:56:42 746@mgb.py:megbrain] static memory allocation:
  comp_node           alloc                      lower_bound         upper_bound
-   gpu0:0    203.68MiB( 213571584bytes)    195.68MiB( 96.07%)    959.26MiB(470.97%)
-[28 17:22:57 746@mgb.py:megbrain] static mem alloc: nr_opr=1580 nr_var=1907 realtime=21.07msec(si0.90 mp+re11.54 omp0.85 alloc7.79)
-[28 17:26:44 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.351
-[28 17:26:44 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.351, Time usage:
-	prepare snapshot: 0.0027618408203125, IO: 0.15209579467773438
-[28 17:26:45 746@mgb.py:megbrain] static memory allocation:
+   gpu0:0    203.68MiB( 213572096bytes)    195.68MiB( 96.07%)    959.26MiB(470.97%)
+[28 18:56:42 746@mgb.py:megbrain] static mem alloc: nr_opr=1580 nr_var=1907 realtime=23.89msec(si0.89 mp+re13.98 omp1.01 alloc8.01)
+[28 19:00:00 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.0
+[28 19:00:00 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.0, Time usage:
+	prepare snapshot: 0.002504587173461914, IO: 0.17121481895446777
+[28 19:00:02 746@mgb.py:megbrain] static memory allocation:
  comp_node           alloc                      lower_bound         upper_bound
    gpu0:0     24.03MiB(  25192448bytes)     24.02MiB(100.00%)    332.11MiB(1382.32%)
-[28 17:26:45 746@mgb.py:megbrain] determined workspace size limit upper bound and reallocate static memory; bounds(MiB): gpu0:0=8405.59
-[28 17:26:45 746@mgb.py:megbrain] static memory allocation:
+[28 19:00:02 746@mgb.py:megbrain] determined workspace size limit upper bound and reallocate static memory; bounds(MiB): gpu0:0=11762.59
+[28 19:00:02 746@mgb.py:megbrain] static memory allocation:
  comp_node           alloc                      lower_bound         upper_bound
    gpu0:0     24.06MiB(  25225216bytes)     24.06MiB(100.00%)    332.63MiB(1382.69%)
-[28 17:26:45 746@mgb.py:megbrain] static mem alloc: nr_opr=448 nr_var=499 realtime=4.50msec(si0.24 mp+re2.92 omp0.14 alloc1.21)
-[28 17:26:45 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.bestmodel
-[28 17:26:46 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.bestmodel, Time usage:
-	prepare snapshot: 0.0017476081848144531, IO: 0.20991253852844238
-[28 17:28:42 344@env.py:meghair.train.env] WRN A exception occurred during WorkingEnv initialization, give up running process
-[28 17:28:42 0@(unknown file):megbrain] WRN cuda comp node method called after global finalize
+[28 19:00:02 746@mgb.py:megbrain] static mem alloc: nr_opr=448 nr_var=499 realtime=3.86msec(si0.23 mp+re2.39 omp0.11 alloc1.13)
+[28 19:00:02 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.bestmodel
+[28 19:00:02 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.bestmodel, Time usage:
+	prepare snapshot: 0.0016369819641113281, IO: 0.16196799278259277
+[28 19:03:40 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.1
+[28 19:03:40 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.1, Time usage:
+	prepare snapshot: 0.0019068717956542969, IO: 0.20477557182312012
+[28 19:03:41 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.bestmodel
+[28 19:03:41 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.bestmodel, Time usage:
+	prepare snapshot: 0.0016803741455078125, IO: 0.20041918754577637
+[28 19:07:56 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.2
+[28 19:07:56 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.2, Time usage:
+	prepare snapshot: 0.003625631332397461, IO: 0.1443774700164795
+[28 19:07:58 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.bestmodel
+[28 19:07:58 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.bestmodel, Time usage:
+	prepare snapshot: 0.002381563186645508, IO: 0.21058154106140137
+[28 19:11:38 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.3
+[28 19:11:38 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.3, Time usage:
+	prepare snapshot: 0.0025370121002197266, IO: 0.14121294021606445
+[28 19:11:40 189@env.py:meghair.train.env] Saving checkpoint to file data/resnet20.data.bestmodel
+[28 19:11:40 204@env.py:meghair.train.env] Save checkpoint to file data/resnet20.data.bestmodel, Time usage:
+	prepare snapshot: 0.0018260478973388672, IO: 0.13376188278198242
