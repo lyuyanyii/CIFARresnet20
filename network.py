@@ -17,21 +17,22 @@ import megskull.opr.arith as arith
 global idx
 idx = 0
 
-def conv_bn(inp, ker_shape, stride, padding, out_chl):
+def conv_bn(inp, ker_shape, stride, padding, out_chl, isrelu):
 	global idx
 	idx += 1
 	l1 = Conv2D(
 		"conv{}".format(idx), inp, kernel_shape = ker_shape, stride = stride, padding = padding,
 		output_nr_channel = out_chl,
-		nonlinearity = ReLU()
+		W = G(mean = 0, std = (2 / (ker_shape**2 * inp.partial_shape[1]))**0.5),
+		nonlinearity = {True:ReLU(), False:Identity()}[isrelu]
 		)
 	l2 = BN("bn{}".format(idx), l1)
 	return l2
 
 def res_layer(inp, chl):
 	pre = inp
-	inp = conv_bn(inp, 3, 1, 1, chl)
-	inp = conv_bn(inp, 3, 1, 1, chl)
+	inp = conv_bn(inp, 3, 1, 1, chl, True)
+	inp = conv_bn(inp, 3, 1, 1, chl, False)
 	inp = arith.ReLU(inp + pre)
 	return inp
 
@@ -40,9 +41,9 @@ def res_block(inp, chl, n):
 		inp = res_layer(inp, chl)
 	else:
 		pre = inp
-		inp = conv_bn(inp, 3, 2, 1, chl)
-		inp = conv_bn(inp, 3, 1, 1, chl)
-		inp = inp + conv_bn(pre, 1, 2, 0, chl)
+		inp = conv_bn(inp, 3, 2, 1, chl, True)
+		inp = conv_bn(inp, 3, 1, 1, chl, False)
+		inp = inp + conv_bn(pre, 1, 2, 0, chl, False)
 		inp = arith.ReLU(inp)
 	
 	for i in range(n - 1):
@@ -55,7 +56,7 @@ def make_network(minibatch_size = 128):
 	inp = DataProvider("data", shape = (minibatch_size, 3, patch_size, patch_size))
 	label = DataProvider("label", shape = (minibatch_size, ))
 
-	lay = conv_bn(inp, 3, 1, 1, 16);
+	lay = conv_bn(inp, 3, 1, 1, 16, True)
 
 	n = 3
 	lis = [16, 32, 64]
@@ -66,7 +67,7 @@ def make_network(minibatch_size = 128):
 	feature = lay.mean(axis = 2).mean(axis = 2)
 	pred = Softmax("pred", FullyConnected(
 		"fc0", feature, output_dim = 10,
-		W = G(mean = 0.0001, std = (1 / 64)**0.5),
+		W = G(mean = 0, std = (2 / 64)**0.5),
 		b = C(0),
 		nonlinearity = Identity()
 		))

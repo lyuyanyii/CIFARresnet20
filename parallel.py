@@ -14,10 +14,7 @@ def augment(img):
 	img = img[:, x:x + 32, y : y + 32]
 	return img
 
-import msgpack
-import msgpack_numpy as m
-
-def worker(data, pname, que, lock, is_train):
+def worker(data, pname, que, lock, is_train, mean, std):
 	p = OutputPipe(pname, buffer_size = 200)
 	lock.acquire()
 	with control(io = [p]):
@@ -26,10 +23,15 @@ def worker(data, pname, que, lock, is_train):
 			idx = que.get()
 			que.put((int(idx) + 1) % len(data[0]))
 			img = np.array(data[0][int(idx)])
-			img = np.resize(img.astype(np.float32), (3, 32, 32))
-			img = (img - 128) / 256
+			img = img.astype(np.float32)
+			img = (img - mean) / std
+			img = np.resize(img, (3, 32, 32))
+			#img = (img - 128) / 256
 			if is_train:
 				img = augment(img)
+				if np.random.randint(2) == 1:
+					img = img[:,:,::-1]
+					print("reversed")
 			#a = msgpack.packb([img, data[1][int(idx)]], default = m.encode)
 			#b = msgpack.unpackb(a, object_hook = m.decode)
 			#print(np.array(b[0]).shape, b[1])
@@ -58,8 +60,13 @@ if True:
 	for i in range(1, 5):
 		data = np.concatenate([data, np.array(dics[i][b'data'])], axis = 0)
 		labels = np.concatenate([labels, np.array(dics[i][b'labels'])], axis = 0)
-	train_dataset = [data[:45000], labels[:45000]]
-	valid_dataset = [data[45000:], labels[45000:]]
+	mean = np.mean(data, axis = 0)
+	std = np.std(data, axis = 0)
+	import pickle
+	with open("meanstd.data", "wb") as f:
+		pickle.dump([mean, std], f)
+	train_dataset = [data[:49500], labels[:49500]]
+	valid_dataset = [data[49500:], labels[49500:]]
 	lis = []
 	que = Queue(1)
 	que.put(0)
@@ -67,14 +74,14 @@ if True:
 
 	p = "lyy.CIFAR10.resnet20.train"
 	for i in range(args.t):
-		proc = P(target = worker, args = (train_dataset, p, que, lock, True))
+		proc = P(target = worker, args = (train_dataset, p, que, lock, True, mean, std))
 		proc.start()
 		lis.append(proc)
 	
 	que_val = Queue(1)
 	que_val.put(0)
 	p_val = "lyy.CIFAR10.resnet20.valid"
-	proc = P(target = worker, args = (valid_dataset, p_val, que_val, lock, False))
+	proc = P(target = worker, args = (valid_dataset, p_val, que_val, lock, False, mean, std))
 	proc.start()
 	lis.append(proc)
 	
