@@ -10,18 +10,19 @@ def augment(img):
 	img = np.concatenate([padding1, img, padding1], axis = 2)
 	padding2 = np.zeros((3, 4, 40))
 	img = np.concatenate([padding2, img, padding2], axis = 1)
-	x, y = np.random.randint(8, size = 2)
+	x, y = np.random.randint(9, size = 2)
 	img = img[:, x:x + 32, y : y + 32]
 	return img
 
 def worker(data, pname, que, lock, is_train, mean, std):
 	p = OutputPipe(pname, buffer_size = 200)
-	lock.acquire()
+	seed = que.get()
+	np.random.seed(seed)
+	que.put(int(seed) + 1)
 	with control(io = [p]):
-		lock.release()
 		while True:
-			idx = que.get()
-			que.put((int(idx) + 1) % len(data[0]))
+			idx = np.random.randint(len(data[0]))
+			#que.put((int(idx) + 1) % len(data[0]))
 			img = np.array(data[0][int(idx)])
 			img = img.astype(np.float32)
 			img = (img - mean) / std
@@ -62,6 +63,10 @@ if True:
 		labels = np.concatenate([labels, np.array(dics[i][b'labels'])], axis = 0)
 	mean = np.mean(data, axis = 0)
 	std = np.std(data, axis = 0)
+	p = np.arange(50000, dtype = np.int16)
+	np.random.shuffle(p)
+	data = np.array([data[i] for i in p])
+	labels = np.array([labels[i] for i in p])
 	import pickle
 	with open("meanstd.data", "wb") as f:
 		pickle.dump([mean, std], f)

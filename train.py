@@ -30,7 +30,7 @@ def get_minibatch(p, size):
 with TrainingEnv(name = "lyy.resnet20.test", part_count = 2) as env:
 	net = make_network(minibatch_size = minibatch_size)
 	preloss = net.loss_var
-	net.loss_var = WeightDecay(net.loss_var, {"*conv*:W": 1e-4, "*fc*:W": 1e-4})
+	net.loss_var = WeightDecay(net.loss_var, {"*conv*:W": 1e-4, "*fc*:W": 1e-4, "*bnaff*:k": 1e-4})
 
 	train_func = env.make_func_from_loss_var(net.loss_var, "train", train_state = True)
 	valid_func = env.make_func_from_loss_var(net.loss_var, "val", train_state = False)
@@ -60,30 +60,45 @@ with TrainingEnv(name = "lyy.resnet20.test", part_count = 2) as env:
 	i = 0
 	max_acc = 0
 
+	his = []
+	import time
 	with control(io = [tr_p]):
 		with control(io = [va_p]):
 	
-			while i <= 64000:
+			a = time.time()
+			TOT_IT = 80000
+			while i <= TOT_IT:
 				i += 1
 				data = get_minibatch(tr_p, minibatch_size)
 				out = train_func(data = data['data'], label = data["label"])
 				loss = out["pre_loss"]
-				print("minibatch = {}, loss = {}".format(i, loss))
+				pred = np.array(out["outputs"]).argmax(axis = 1)
+				acc = (pred == np.array(data["label"])).mean()
+				his.append([loss, acc])
+				print("minibatch = {}, loss = {}, acc = {}".format(i, loss, acc))
 				#Learning Rate Adjusting
 				if i == 32000 or i == 48000:
 					optimizer.learning_rate /= 10
 				if i == 64000:
 					optimizer.learning_rate = 1e-5
+					env.save_checkpoint("resnet20.data.64000")
 				if i % (EPOCH_NUM) == 0:
-					env.save_checkpoint("resnet20.data")
 					epoch += 1
-					data_val = get_minibatch(va_p, 5000)
+					data_val = get_minibatch(va_p, 500)
 					out_val = valid_func(data = data["data"], label = data["label"])
 					pred = np.argmax(np.array(out["outputs"]), axis = 1)
 					acc = (np.array(pred) == np.array(data["label"])).mean()
+
+					print("epoch = {}, acc = {}, max_acc = {}".format(epoch, acc, max_acc))
+					b = time.time()
+					b = b + (b - a) / i * TOT_IT
+					print("Expected finish time {}".format(time.asctime(time.localtime(b))))
+
 					if acc > max_acc and i > 64000:
 						max_acc = acc
 						env.save_checkpoint("resnet20.data.bestmodel")
-					print("epoch = {}, acc = {}, max_acc = {}".format(epoch, acc, max_acc))
+					env.save_checkpoint("resnet20.data")
 					print("**************************")
-		
+					import pickle
+					with open("hisloss.data", "wb") as f:
+						pickle.dump(his, f)

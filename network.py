@@ -3,7 +3,7 @@ import numpy as np
 from megskull.network import Network
 from megskull.opr.all import (
     Conv2D, Pooling2D, FullyConnected, Softmax,
-	    CrossEntropyLoss, Dropout
+	    CrossEntropyLoss, Dropout, ElementwiseAffine 
 		)
 from megskull.opr.helper.elemwise_trans import ReLU, Identity
 from megskull.graph.query import GroupNode
@@ -23,10 +23,11 @@ def conv_bn(inp, ker_shape, stride, padding, out_chl, isrelu):
 	l1 = Conv2D(
 		"conv{}".format(idx), inp, kernel_shape = ker_shape, stride = stride, padding = padding,
 		output_nr_channel = out_chl,
-		W = G(mean = 0, std = (2 / (ker_shape**2 * inp.partial_shape[1]))**0.5),
+		W = G(mean = 0, std = ((1 + int(isrelu)) / (ker_shape**2 * inp.partial_shape[1]))**0.5),
 		nonlinearity = {True:ReLU(), False:Identity()}[isrelu]
 		)
-	l2 = BN("bn{}".format(idx), l1)
+	l2 = BN("bn{}".format(idx), l1, eps = 1e-9)
+	l2 = ElementwiseAffine("bnaff{}".format(idx), l2, shared_in_channels = False, k = C(1), b = C(0))
 	return l2
 
 def res_layer(inp, chl):
@@ -37,14 +38,14 @@ def res_layer(inp, chl):
 	return inp
 
 def res_block(inp, chl, n):
+	stride = 2
 	if chl == 16:
-		inp = res_layer(inp, chl)
-	else:
-		pre = inp
-		inp = conv_bn(inp, 3, 2, 1, chl, True)
-		inp = conv_bn(inp, 3, 1, 1, chl, False)
-		inp = inp + conv_bn(pre, 1, 2, 0, chl, False)
-		inp = arith.ReLU(inp)
+		stride = 1
+	pre = inp
+	inp = conv_bn(inp, 3, stride, 1, chl, True)
+	inp = conv_bn(inp, 3, 1, 1, chl, False)
+	inp = inp + conv_bn(pre, 1, stride, 0, chl, False)
+	inp = arith.ReLU(inp)
 	
 	for i in range(n - 1):
 		inp = res_layer(inp, chl)

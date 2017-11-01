@@ -1,0 +1,12 @@
+1. 每个minibatch开关dpflow pipe，文件数会炸
+2. horizontal flip 能涨2个点
+3. 第一阶段learning rate要大(mini_batch_size = 128, lr = 0.1)，可以持续半个训练时间
+	砍掉一半时间，掉了2个点
+4. x -= np.mean(x, axis = 0)
+   x /= np.std(x, axis = 0)
+   涨了0.2个点
+5. 网络结构搭错了。+前所有层没有relu，= =，。。。大的根本训不出来(not sure)
+6. order of training images is not so important
+7. NO AFFINE AFTER BN IN MEGBRAIN!!!
+8. weights decay on bn?
+9. shuffle data!

@@ -36,7 +36,9 @@ for i in range(10):
 
 pred = test_func(data = data)
 print(np.array(pred).shape)
+score = np.max(np.array(pred), axis = 1)
+print(np.argmin(score))
 pred = np.argmax(np.array(pred), axis = 1)
 acc = (np.array(pred) == np.array(label)).mean()
-print((1 - acc) * 100)
+print((acc))
 
